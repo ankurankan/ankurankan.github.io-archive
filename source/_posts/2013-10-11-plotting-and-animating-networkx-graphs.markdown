@@ -4,7 +4,6 @@ title: "Plotting and Animating NetworkX graphs"
 date: 2013-10-11 23:04
 comments: true
 categories: NetworkX, Matplotlib, Animation, Plotting
-published: false
 ---
 Let's start with a very simple color changing animation in which we will draw a graph whose nodes will change color. Here in each iteration we are drawing a new graph over the previous ones with different node colors. This is a very bad approach but let's just start with this. I will write about better ways to do it in the next post.
 
