@@ -5,9 +5,14 @@ date: 2013-10-11 23:04
 comments: true
 categories: NetworkX, Matplotlib, Animation, Plotting
 ---
-Let's start with a very simple color changing animation in which we will draw a graph whose nodes will change color. Here in each iteration we are drawing a new graph over the previous ones with different node colors. This is a very bad approach but let's just start with this. I will write about better ways to do it in the next post.
+Let's start with a very simple color changing animation in which we will draw 
+a graph whose nodes will change color. Here in each iteration we are drawing 
+a new graph over the previous ones with different node colors. This is a 
+very bad approach but let's just start with this. I will write about better 
+ways to do it in the next post.
 
-I will be using `networkX` for drawing the graphs and `matplotlib` for animation.
+I will be using `networkX` for drawing the graphs and `matplotlib` for 
+animation.
 ```python
 import networkx as nx
 import matplotlib.animation as animation
@@ -31,7 +36,9 @@ fig = plt.gcf()
 anim = animation.FuncAnimation(fig, animate, frames=20, interval=20, blit=True)
 ```
 
-Let's step through and see what's happening. In the first four lines we are importing `networkX`, `matplotlib.animation`, `matplotlib.pyplot` and `random` modules. 
+Let's step through and see what's happening. In the first four lines we are 
+importing `networkX`, `matplotlib.animation`, `matplotlib.pyplot` and `random` 
+modules. 
 
 In the next few lines we create a graph using networkX:
 ```python
@@ -41,18 +48,22 @@ G.add_edges_from([(1,2), (3,4), (2,5), (4,5), (6,7), (8,9), (4,7), (1,7), (3,5),
 ```
 First we initialize an empty graph `G`. Then we add 9 nodes and 13 edges to it.
 
-This next piece is the animation function which takes a single parameter `i` which is the frame number of the animation.
+This next piece is the animation function which takes a single parameter `i`
+ which is the frame number of the animation.
 ```python
 define animate(i): 
     colors = ['r', 'b', 'g', 'y', 'w', 'm']                                
     nx.draw_circular(G, node_color=[random.choice(colors) for j in range(9)]   
 ```
-Here the `colors` list is a list of colors from which we will be randomly picking up colors for our nodes.
+Here the `colors` list is a list of colors from which we will be randomly 
+picking up colors for our nodes.
 `nx.draw_circular` draws the graph keeping the nodes in a circular pattern.
 
 ```python
 anim = animation.FuncAnimation(fig, animate, frames=20, interval=20, blit=True)
 ```
-`animation.FuncAnimation` repeatedly calls the animate fucntion incrementing i in each iteration.
-frames define the number of time animate function is called, intervar is the inverval between each call.
+`animation.FuncAnimation` repeatedly calls the animate fucntion incrementing 
+`i` in each iteration.
+`frames` define the number of times animate function is called, 
+`interval` is the inverval between each call.
 `blit=True` defines to draw only those parts which have changed.
