@@ -9,7 +9,8 @@
   <meta name="author" content="Ankur Ankan">
 
   
-  <meta name="description" content="Let&rsquo;s start with a very simple color changing animation in which we will draw a graph whose nodes will change color. Here in each iteration we &hellip;">
+  <meta name="description" content="Let&rsquo;s start with a very simple color changing animation in which we will draw
+a graph whose nodes will change color. Here in each iteration we &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -94,9 +95,14 @@
   </header>
 
 
-  <div class="entry-content"><p>Let&rsquo;s start with a very simple color changing animation in which we will draw a graph whose nodes will change color. Here in each iteration we are drawing a new graph over the previous ones with different node colors. This is a very bad approach but let&rsquo;s just start with this. I will write about better ways to do it in the next post.</p>
+  <div class="entry-content"><p>Let&rsquo;s start with a very simple color changing animation in which we will draw
+a graph whose nodes will change color. Here in each iteration we are drawing
+a new graph over the previous ones with different node colors. This is a
+very bad approach but let&rsquo;s just start with this. I will write about better
+ways to do it in the next post.</p>
 
-<p>I will be using <code>networkX</code> for drawing the graphs and <code>matplotlib</code> for animation.</p>
+<p>I will be using <code>networkX</code> for drawing the graphs and <code>matplotlib</code> for
+animation.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -141,7 +147,9 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Let&rsquo;s step through and see what&rsquo;s happening. In the first four lines we are importing <code>networkX</code>, <code>matplotlib.animation</code>, <code>matplotlib.pyplot</code> and <code>random</code> modules.</p>
+<p>Let&rsquo;s step through and see what&rsquo;s happening. In the first four lines we are
+importing <code>networkX</code>, <code>matplotlib.animation</code>, <code>matplotlib.pyplot</code> and <code>random</code>
+modules.</p>
 
 <p>In the next few lines we create a graph using networkX:</p>
 
@@ -156,7 +164,8 @@
 
 <p>First we initialize an empty graph <code>G</code>. Then we add 9 nodes and 13 edges to it.</p>
 
-<p>This next piece is the animation function which takes a single parameter <code>i</code> which is the frame number of the animation.</p>
+<p>This next piece is the animation function which takes a single parameter <code>i</code>
+ which is the frame number of the animation.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -167,7 +176,8 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Here the <code>colors</code> list is a list of colors from which we will be randomly picking up colors for our nodes.
+<p>Here the <code>colors</code> list is a list of colors from which we will be randomly
+picking up colors for our nodes.
 <code>nx.draw_circular</code> draws the graph keeping the nodes in a circular pattern.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -175,8 +185,10 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><code>animation.FuncAnimation</code> repeatedly calls the animate fucntion incrementing i in each iteration.
-frames define the number of time animate function is called, intervar is the inverval between each call.
+<p><code>animation.FuncAnimation</code> repeatedly calls the animate fucntion incrementing
+<code>i</code> in each iteration.
+<code>frames</code> define the number of times animate function is called,
+<code>interval</code> is the inverval between each call.
 <code>blit=True</code> defines to draw only those parts which have changed.</p>
 </div>
   
@@ -224,7 +236,7 @@ frames define the number of time animate function is called, intervar is the inv
 
         github.showRepos({
             user: 'ankurankan',
-            count: 0,
+            count: 3,
             skip_forks: true,
             target: '#gh_repos'
         });
@@ -237,7 +249,7 @@ frames define the number of time animate function is called, intervar is the inv
 
 <section class="googleplus">
   <h1>
-    <a href="https://plus.google.com/ankurankan?rel=author">
+    <a href="https://plus.google.com/115824642780532472937?rel=author">
       <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
       Google+
     </a>
