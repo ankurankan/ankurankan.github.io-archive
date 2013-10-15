@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Matplotlib, | My Octopress Blog]]></title>
   <link href="http://ankurankan.github.io/blog/categories/matplotlib/atom.xml" rel="self"/>
   <link href="http://ankurankan.github.io/"/>
-  <updated>2013-10-15T19:04:53+05:30</updated>
+  <updated>2013-10-15T22:12:28+05:30</updated>
   <id>http://ankurankan.github.io/</id>
   <author>
     <name><![CDATA[Ankur Ankan]]></name>
@@ -287,7 +287,7 @@ First we initialize an empty graph <code>G</code>. Then we add 9 nodes and 13 ed
 <p>This next piece is the animation function which takes a single parameter <code>i</code>
  which is the frame number of the animation.
 ```python
-define animate(i):</p>
+def animate(i):</p>
 
 <pre><code>colors = ['r', 'b', 'g', 'y', 'w', 'm']                                
 nx.draw_circular(G, node_color=[random.choice(colors) for j in range(9)]   
