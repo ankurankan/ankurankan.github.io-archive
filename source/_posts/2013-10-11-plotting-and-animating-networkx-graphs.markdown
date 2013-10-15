@@ -258,7 +258,7 @@ First we initialize an empty graph `G`. Then we add 9 nodes and 13 edges to it.
 This next piece is the animation function which takes a single parameter `i`
  which is the frame number of the animation.
 ```python
-define animate(i): 
+def animate(i): 
     colors = ['r', 'b', 'g', 'y', 'w', 'm']                                
     nx.draw_circular(G, node_color=[random.choice(colors) for j in range(9)]   
 ```
