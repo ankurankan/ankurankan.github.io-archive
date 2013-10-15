@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Matplotlib, | My Octopress Blog]]></title>
   <link href="http://ankurankan.github.io/blog/categories/matplotlib/atom.xml" rel="self"/>
   <link href="http://ankurankan.github.io/"/>
-  <updated>2013-10-15T11:15:09+05:30</updated>
+  <updated>2013-10-15T13:49:51+05:30</updated>
   <id>http://ankurankan.github.io/</id>
   <author>
     <name><![CDATA[Ankur Ankan]]></name>
@@ -20,56 +20,75 @@
     <id>http://ankurankan.github.io/blog/2013/10/11/plotting-and-animating-networkx-graphs</id>
     <content type="html"><![CDATA[<h3>Modifying neworkX graph using Matplotlib</h3>
 
-<p>Let&rsquo;s dive deeper into how does networkX internally draws graphs.
-Taking a quick look of all the children of the plot.
-<code>python
-fig = plt.gcf()
-axes = plt.gca()
-axes.get_children()
-</code>
-We get the following output:
-<code>python
-[&lt;matplotlib.axis.XAxis at 0x226ebd0&gt;,
- &lt;matplotlib.axis.YAxis at 0x36fa2d0&gt;,
- &lt;matplotlib.text.Text at 0x373fad0&gt;,
- &lt;matplotlib.text.Text at 0x373f410&gt;,
- &lt;matplotlib.text.Text at 0x373fc50&gt;,
- &lt;matplotlib.text.Text at 0x373fcd0&gt;,
- &lt;matplotlib.text.Text at 0x373fd50&gt;,
- &lt;matplotlib.text.Text at 0x373fdd0&gt;,
- &lt;matplotlib.text.Text at 0x373fe50&gt;,
- &lt;matplotlib.text.Text at 0x373fed0&gt;,
- &lt;matplotlib.text.Text at 0x373ff90&gt;,
- &lt;matplotlib.collections.PathCollection at 0x373dc10&gt;,
- &lt;matplotlib.collections.LineCollection at 0x373f3d0&gt;,
- &lt;matplotlib.text.Text at 0x36fcd50&gt;,
- &lt;matplotlib.patches.Rectangle at 0x36fc890&gt;,
- &lt;matplotlib.spines.Spine at 0x36f2b10&gt;,
- &lt;matplotlib.spines.Spine at 0x36f2810&gt;,
- &lt;matplotlib.spines.Spine at 0x36f2990&gt;,
- &lt;matplotlib.spines.Spine at 0x36f2650&gt;]
-</code>
-Here we see there are 9 <code>matplotlib.text.Text</code> objects which are the labels
-on the nodes. Let&rsquo;s see the properties of the object.
+<p>Let&rsquo;s start with plotting a simple graph using <code>nx.draw</code>:
 ```python
-In [15]: text_object = axes.get_children()[2]
-In [16]: text.get_text()
-Out[16]: &lsquo;1&rsquo;</p>
+import networkx as nx</p>
 
-<p>In [17]: text_object.get_size()
-Out[17]: 12.0</p>
+<p>G = nx.Graph()
+G.add_nodes_from([1, 2, 3, 4, 5, 6, 7, 8, 9])
+G.add_edges_from([(1,2), (3,4), (2,5), (4,5), (6,7), (8,9), (4,7), (1,7), (3,5), (2,7), (5,8), (2,9), (5,7)])</p>
 
-<p>In [18]: text_object.get_color()
-Out[18]: &lsquo;k&rsquo;
-<code>``
-Here we see a bunch of properties of the object. For the complete list we can
-do</code>text_object.properties()`.</p>
+<p>nx.draw(G)
+```
+In my case I get something like this:</p>
+
+<p><img src="images/figure_1.png"></p>
+
+<p>You might get something different because networkX internally uses
+<code>matplotlib.scatter</code> which randomly generates the position of the nodes.</p>
+
+<p>Now let&rsquo;s dive deeper into how does networkX internally draws graphs.
+Taking a quick look of all the children of the plot.
+```python
+fig = plt.gcf()</p>
+
+<p>axes = plt.gca()</p>
+
+<p>axes.get_children()
+Out[14]:
+[&lt;matplotlib.axis.XAxis at 0x1bed4d0>,
+ &lt;matplotlib.axis.YAxis at 0x30457d0>,
+ &lt;matplotlib.text.Text at 0x30613d0>,
+ &lt;matplotlib.text.Text at 0x3061310>,
+ &lt;matplotlib.text.Text at 0x3061550>,
+ &lt;matplotlib.text.Text at 0x30615d0>,
+ &lt;matplotlib.text.Text at 0x3061650>,
+ &lt;matplotlib.text.Text at 0x30616d0>,
+ &lt;matplotlib.text.Text at 0x3061750>,
+ &lt;matplotlib.text.Text at 0x30617d0>,
+ &lt;matplotlib.text.Text at 0x3061890>,
+ &lt;matplotlib.collections.PathCollection at 0x305d4d0>,
+ &lt;matplotlib.collections.LineCollection at 0x305dc50>,
+ &lt;matplotlib.text.Text at 0x30514d0>,
+ &lt;matplotlib.patches.Rectangle at 0x3051550>,
+ &lt;matplotlib.spines.Spine at 0x303ec90>,
+ &lt;matplotlib.spines.Spine at 0x303e990>,
+ &lt;matplotlib.spines.Spine at 0x303eb10>,
+ &lt;matplotlib.spines.Spine at 0x303e7d0>]
+<code>
+Here we see there are 9 `matplotlib.text.Text` objects which are the labels
+on the nodes. Let's see some of the properties of one of the text objects.
+</code>python
+text_object = axes.get_children()[2]</p>
+
+<p>text_object.get_text()
+Out[13]: &lsquo;1&rsquo;</p>
+
+<p>text_object.get_size()
+Out[14]: 12.0</p>
+
+<p>text_object.get_color()
+Out[15]: &lsquo;k&rsquo;</p>
+
+<p><code>``
+For the complete list of properties we can call the</code>properties<code>method.
+Example:</code>text_object.properties()`.</p>
 
 <p>Next object we see is the <code>matplotlib.collections.PathCollection</code> object which
 is the collection object of all the nodes. Now again we can see some properties
 and modify them.
 ```python
-nodes = axes.get_children()[11]
+nodes = axes.get_children()[11]                 # Selecting the PathCollection object
 In [25]: nodes.get_pickradius()
 Out[25]: 5.0</p>
 
@@ -80,7 +99,16 @@ Out[26]: &lsquo;_collection0&rsquo;</p>
 Out[27]: array([[ 1.,  0.,  0.,  1.]])</p>
 
 <p>In [28]: nodes.get_edgecolors()
-Out[28]: array([[ 0.,  0.,  0.,  1.]])
+Out[28]: array([[ 0.,  0.,  0.,  1.]])</p>
+
+<p>In [29]: nodes.get_linewidth()
+Out[29]: (1.0,)
+<code>
+We can change the properties:
+</code>python
+nodes.set_linewidth(2)
+nodes.set_pickradius(8)
+plt.draw()
 <code>
 Now with the `offsets` property we can change the position of the nodes.
 </code>python
@@ -105,17 +133,106 @@ array([[ 1.        ,  0.31732594],</p>
 <p>In [37]: offsets[0][1] = 0.5</p>
 
 <p>In [38]: plt.draw()
+<code>``
+Now we get this output:
+<img src="images/figure_2.png">
+We see here that only the node has moved and the label and the edges are
+at their original position. We will now move the edges to the new node
+position.  
+NetworkX uses</code>matplotlib.scatter<code>to draw nodes which creates a
+</code>collections.PathCollection<code>object and then draws the edges
+which is a</code>matplotlib.collections.LineCollection` object.</p>
+
+<p>We can modify many properties of the lines. But for now let&rsquo;s just move the
+two edges to the new position of their node.
+<code>python
+edges_object = axes.get_children()[12]              #selecting the LineCollection object
+edges_object.get_paths()
+Out[34]:
+[Path([[ 0.17693707  0.        ]
+ [ 0.29792     0.44577014]], None),
+ Path([[ 0.17693707  0.        ]
+ [ 0.43349969  0.12392229]], None),
+ Path([[ 0.29792     0.44577014]
+ [ 0.30217028  0.87528811]], None),
+ Path([[ 0.29792     0.44577014]
+ [ 0.70125136  0.42163912]], None),
+ Path([[ 0.29792     0.44577014]
+ [ 0.43349969  0.12392229]], None),
+ Path([[ 1.          0.3245961 ]
+ [ 0.8526191   0.04511872]], None),
+ Path([[ 1.          0.3245961 ]
+ [ 0.70125136  0.42163912]], None),
+ Path([[ 0.8526191   0.04511872]
+ [ 0.70125136  0.42163912]], None),
+ Path([[ 0.8526191   0.04511872]
+ [ 0.43349969  0.12392229]], None),
+ Path([[ 0.70125136  0.42163912]
+ [ 0.65698815  0.85722426]], None),
+ Path([[ 0.70125136  0.42163912]
+ [ 0.43349969  0.12392229]], None),
+ Path([[ 0.          0.24864231]
+ [ 0.43349969  0.12392229]], None),
+ Path([[ 0.65698815  0.85722426]
+ [ 0.30217028  0.87528811]], None)]
+</code>
+We see the 13 edges. The initial position of the moved node was <code>[0.176...  0.     ]</code>
+and we see here that the first and second paths have the starting point at
+that position. So, we need to move the starting point of those two edges
+to <code>[0.5     0.5     ]</code>.
+```python
+first_path = edges_object.get_paths()[0]
+first_path.vertices
+Out[41]:
+array([[ 0.17693707,  0.        ],</p>
+
+<pre><code>   [ 0.29792   ,  0.44577014]])
+</code></pre>
+
+<p>first_path.vertices[0][0] = 0.5
+first_path.vertices[0][1] = 0.5
+second_path = edges_object.get_paths()[1]
+second_path.vertices
+Out[48]:
+array([[ 0.17693707,  0.        ],</p>
+
+<pre><code>   [ 0.43349969,  0.12392229]])
+</code></pre>
+
+<p>second_path.vertices[0][0] = 0.5
+second_path.vertices[0][1] = 0.5</p>
+
+<p>plt.draw()
 ```
-Now we get this output:</p>
+We can now see the graph to be something like:
+<img src="images/figure_3.png"></p>
 
-<p>[img]</p>
+<p>Now let&rsquo;s move the label to this position:
+```python
+label_object = axes.get_children()[2]</p>
 
-<p>We see here that only the node has moved not the label and the edges are
-also at there original position. We will now move the edges to the new node
-position.
-networkX uses <code>matplotlib.scatter</code> to draw nodes and then draws the edges.
-And as we know matplotlib.scatter creates a node collection object and edges
-colleciton object. We can see the properties of node_collection object as</p>
+<p>label_object.get_text()
+Out[54]: &lsquo;1&rsquo;</p>
+
+<p>label_object.get_position()
+Out[55]: (0.17693707256025257, 0.0)</p>
+
+<p>label_object.set_position((0.5, 0.5))</p>
+
+<p>plt.draw()
+<code>``
+We can now see the graph to be like:
+<img src="images/figure_4.png">
+So finally we have moved the node to a new position. Because networkX uses
+collection objects to draw the graph, we don't can't change many of the
+properties of the individual nodes or edges. For having better control over
+the properties I have rewritten the</code>nx.draw` module which draws the graphs
+normally without using the collection objects. You can check out the
+<a href="https://github.com/ankurankan">github repo</a>. Although creating an individual
+object for each node and edges is very memory inefficient when compared to
+the collection objects but gives much more control over the object. I will
+discuss this in detail later in another post. For now lets see a basic
+animation example.</p>
 
 <h3>Basic Animation</h3>
 

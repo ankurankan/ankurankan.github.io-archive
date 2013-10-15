@@ -9,8 +9,14 @@
   <meta name="author" content="Ankur Ankan">
 
   
-  <meta name="description" content="Modifying neworkX graph using Matplotlib Let&rsquo;s dive deeper into how does networkX internally draws graphs.
-Taking a quick look of all the &hellip;">
+  <meta name="description" content="Modifying neworkX graph using Matplotlib Let&rsquo;s start with plotting a simple graph using nx.draw: 1
+2
+3
+4
+5
+6
+7
+import networkx as nx G = nx. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -97,19 +103,34 @@ Taking a quick look of all the &hellip;">
 
   <div class="entry-content"><h3>Modifying neworkX graph using Matplotlib</h3>
 
-<p>Let&rsquo;s dive deeper into how does networkX internally draws graphs.
-Taking a quick look of all the children of the plot.</p>
+<p>Let&rsquo;s start with plotting a simple graph using <code>nx.draw</code>:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
-</span><span class='line'><span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
-</span><span class='line'><span class="n">axes</span><span class="o">.</span><span class="n">get_children</span><span class="p">()</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+</span><span class='line'><span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+</span><span class='line'><span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">)])</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">nx</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>We get the following output:</p>
+<p>In my case I get something like this:</p>
+
+<p><img src="images/figure_1.png"></p>
+
+<p>You might get something different because networkX internally uses
+<code>matplotlib.scatter</code> which randomly generates the position of the nodes.</p>
+
+<p>Now let&rsquo;s dive deeper into how does networkX internally draws graphs.
+Taking a quick look of all the children of the plot.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -130,30 +151,42 @@ Taking a quick look of all the children of the plot.</p>
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
 <span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">XAxis</span> <span class="n">at</span> <span class="mh">0x226ebd0</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">YAxis</span> <span class="n">at</span> <span class="mh">0x36fa2d0</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x373fad0</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x373f410</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x373fc50</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x373fcd0</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x373fd50</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x373fdd0</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x373fe50</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x373fed0</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x373ff90</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">PathCollection</span> <span class="n">at</span> <span class="mh">0x373dc10</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">LineCollection</span> <span class="n">at</span> <span class="mh">0x373f3d0</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x36fcd50</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span> <span class="n">at</span> <span class="mh">0x36fc890</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">Spine</span> <span class="n">at</span> <span class="mh">0x36f2b10</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">Spine</span> <span class="n">at</span> <span class="mh">0x36f2810</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">Spine</span> <span class="n">at</span> <span class="mh">0x36f2990</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">Spine</span> <span class="n">at</span> <span class="mh">0x36f2650</span><span class="o">&gt;</span><span class="p">]</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">axes</span><span class="o">.</span><span class="n">get_children</span><span class="p">()</span>
+</span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">14</span><span class="p">]:</span>
+</span><span class='line'><span class="p">[</span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">XAxis</span> <span class="n">at</span> <span class="mh">0x1bed4d0</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">YAxis</span> <span class="n">at</span> <span class="mh">0x30457d0</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x30613d0</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x3061310</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x3061550</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x30615d0</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x3061650</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x30616d0</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x3061750</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x30617d0</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x3061890</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">PathCollection</span> <span class="n">at</span> <span class="mh">0x305d4d0</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">LineCollection</span> <span class="n">at</span> <span class="mh">0x305dc50</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">Text</span> <span class="n">at</span> <span class="mh">0x30514d0</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span> <span class="n">at</span> <span class="mh">0x3051550</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">Spine</span> <span class="n">at</span> <span class="mh">0x303ec90</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">Spine</span> <span class="n">at</span> <span class="mh">0x303e990</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">Spine</span> <span class="n">at</span> <span class="mh">0x303eb10</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">spines</span><span class="o">.</span><span class="n">Spine</span> <span class="n">at</span> <span class="mh">0x303e7d0</span><span class="o">&gt;</span><span class="p">]</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>Here we see there are 9 <code>matplotlib.text.Text</code> objects which are the labels
-on the nodes. Let&rsquo;s see the properties of the object.</p>
+on the nodes. Let&rsquo;s see some of the properties of one of the text objects.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -164,20 +197,22 @@ on the nodes. Let&rsquo;s see the properties of the object.</p>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="n">text_object</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">get_children</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
-</span><span class='line'><span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="n">text</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
-</span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="s">&#39;1&#39;</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">text_object</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">get_children</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">In</span> <span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="n">text_object</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
-</span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="mf">12.0</span>
+</span><span class='line'><span class="n">text_object</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
+</span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">13</span><span class="p">]:</span> <span class="s">&#39;1&#39;</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">In</span> <span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">text_object</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
-</span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="s">&#39;k&#39;</span>
+</span><span class='line'><span class="n">text_object</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+</span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="mf">12.0</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">text_object</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
+</span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="s">&#39;k&#39;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Here we see a bunch of properties of the object. For the complete list we can
-do <code>text_object.properties()</code>.</p>
+<p>For the complete list of properties we can call the <code>properties</code> method.
+Example: <code>text_object.properties()</code>.</p>
 
 <p>Next object we see is the <code>matplotlib.collections.PathCollection</code> object which
 is the collection object of all the nodes. Now again we can see some properties
@@ -195,7 +230,10 @@ and modify them.</p>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">nodes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">get_children</span><span class="p">()[</span><span class="mi">11</span><span class="p">]</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">nodes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">get_children</span><span class="p">()[</span><span class="mi">11</span><span class="p">]</span>                 <span class="c"># Selecting the PathCollection object</span>
 </span><span class='line'><span class="n">In</span> <span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">get_pickradius</span><span class="p">()</span>
 </span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="mf">5.0</span>
 </span><span class='line'>
@@ -207,6 +245,20 @@ and modify them.</p>
 </span><span class='line'>
 </span><span class='line'><span class="n">In</span> <span class="p">[</span><span class="mi">28</span><span class="p">]:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">get_edgecolors</span><span class="p">()</span>
 </span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">28</span><span class="p">]:</span> <span class="n">array</span><span class="p">([[</span> <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">]])</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">In</span> <span class="p">[</span><span class="mi">29</span><span class="p">]:</span> <span class="n">nodes</span><span class="o">.</span><span class="n">get_linewidth</span><span class="p">()</span>
+</span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">29</span><span class="p">]:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can change the properties:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">nodes</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span><span class='line'><span class="n">nodes</span><span class="o">.</span><span class="n">set_pickradius</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -253,16 +305,161 @@ and modify them.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Now we get this output:</p>
+<p>Now we get this output:
+<img src="images/figure_2.png">
+We see here that only the node has moved and the label and the edges are
+at their original position. We will now move the edges to the new node
+position.<br/>
+NetworkX uses <code>matplotlib.scatter</code> to draw nodes which creates a
+<code>collections.PathCollection</code> object and then draws the edges
+which is a <code>matplotlib.collections.LineCollection</code> object.</p>
 
-<p>[img]</p>
+<p>We can modify many properties of the lines. But for now let&rsquo;s just move the
+two edges to the new position of their node.</p>
 
-<p>We see here that only the node has moved not the label and the edges are
-also at there original position. We will now move the edges to the new node
-position.
-networkX uses <code>matplotlib.scatter</code> to draw nodes and then draws the edges.
-And as we know matplotlib.scatter creates a node collection object and edges
-colleciton object. We can see the properties of node_collection object as</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">edges_object</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">get_children</span><span class="p">()[</span><span class="mi">12</span><span class="p">]</span>              <span class="c">#selecting the LineCollection object</span>
+</span><span class='line'><span class="n">edges_object</span><span class="o">.</span><span class="n">get_paths</span><span class="p">()</span>
+</span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">34</span><span class="p">]:</span>
+</span><span class='line'><span class="p">[</span><span class="n">Path</span><span class="p">([[</span> <span class="mf">0.17693707</span>  <span class="mf">0.</span>        <span class="p">]</span>
+</span><span class='line'> <span class="p">[</span> <span class="mf">0.29792</span>     <span class="mf">0.44577014</span><span class="p">]],</span> <span class="bp">None</span><span class="p">),</span>
+</span><span class='line'> <span class="n">Path</span><span class="p">([[</span> <span class="mf">0.17693707</span>  <span class="mf">0.</span>        <span class="p">]</span>
+</span><span class='line'> <span class="p">[</span> <span class="mf">0.43349969</span>  <span class="mf">0.12392229</span><span class="p">]],</span> <span class="bp">None</span><span class="p">),</span>
+</span><span class='line'> <span class="n">Path</span><span class="p">([[</span> <span class="mf">0.29792</span>     <span class="mf">0.44577014</span><span class="p">]</span>
+</span><span class='line'> <span class="p">[</span> <span class="mf">0.30217028</span>  <span class="mf">0.87528811</span><span class="p">]],</span> <span class="bp">None</span><span class="p">),</span>
+</span><span class='line'> <span class="n">Path</span><span class="p">([[</span> <span class="mf">0.29792</span>     <span class="mf">0.44577014</span><span class="p">]</span>
+</span><span class='line'> <span class="p">[</span> <span class="mf">0.70125136</span>  <span class="mf">0.42163912</span><span class="p">]],</span> <span class="bp">None</span><span class="p">),</span>
+</span><span class='line'> <span class="n">Path</span><span class="p">([[</span> <span class="mf">0.29792</span>     <span class="mf">0.44577014</span><span class="p">]</span>
+</span><span class='line'> <span class="p">[</span> <span class="mf">0.43349969</span>  <span class="mf">0.12392229</span><span class="p">]],</span> <span class="bp">None</span><span class="p">),</span>
+</span><span class='line'> <span class="n">Path</span><span class="p">([[</span> <span class="mf">1.</span>          <span class="mf">0.3245961</span> <span class="p">]</span>
+</span><span class='line'> <span class="p">[</span> <span class="mf">0.8526191</span>   <span class="mf">0.04511872</span><span class="p">]],</span> <span class="bp">None</span><span class="p">),</span>
+</span><span class='line'> <span class="n">Path</span><span class="p">([[</span> <span class="mf">1.</span>          <span class="mf">0.3245961</span> <span class="p">]</span>
+</span><span class='line'> <span class="p">[</span> <span class="mf">0.70125136</span>  <span class="mf">0.42163912</span><span class="p">]],</span> <span class="bp">None</span><span class="p">),</span>
+</span><span class='line'> <span class="n">Path</span><span class="p">([[</span> <span class="mf">0.8526191</span>   <span class="mf">0.04511872</span><span class="p">]</span>
+</span><span class='line'> <span class="p">[</span> <span class="mf">0.70125136</span>  <span class="mf">0.42163912</span><span class="p">]],</span> <span class="bp">None</span><span class="p">),</span>
+</span><span class='line'> <span class="n">Path</span><span class="p">([[</span> <span class="mf">0.8526191</span>   <span class="mf">0.04511872</span><span class="p">]</span>
+</span><span class='line'> <span class="p">[</span> <span class="mf">0.43349969</span>  <span class="mf">0.12392229</span><span class="p">]],</span> <span class="bp">None</span><span class="p">),</span>
+</span><span class='line'> <span class="n">Path</span><span class="p">([[</span> <span class="mf">0.70125136</span>  <span class="mf">0.42163912</span><span class="p">]</span>
+</span><span class='line'> <span class="p">[</span> <span class="mf">0.65698815</span>  <span class="mf">0.85722426</span><span class="p">]],</span> <span class="bp">None</span><span class="p">),</span>
+</span><span class='line'> <span class="n">Path</span><span class="p">([[</span> <span class="mf">0.70125136</span>  <span class="mf">0.42163912</span><span class="p">]</span>
+</span><span class='line'> <span class="p">[</span> <span class="mf">0.43349969</span>  <span class="mf">0.12392229</span><span class="p">]],</span> <span class="bp">None</span><span class="p">),</span>
+</span><span class='line'> <span class="n">Path</span><span class="p">([[</span> <span class="mf">0.</span>          <span class="mf">0.24864231</span><span class="p">]</span>
+</span><span class='line'> <span class="p">[</span> <span class="mf">0.43349969</span>  <span class="mf">0.12392229</span><span class="p">]],</span> <span class="bp">None</span><span class="p">),</span>
+</span><span class='line'> <span class="n">Path</span><span class="p">([[</span> <span class="mf">0.65698815</span>  <span class="mf">0.85722426</span><span class="p">]</span>
+</span><span class='line'> <span class="p">[</span> <span class="mf">0.30217028</span>  <span class="mf">0.87528811</span><span class="p">]],</span> <span class="bp">None</span><span class="p">)]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We see the 13 edges. The initial position of the moved node was <code>[0.176...  0.     ]</code>
+and we see here that the first and second paths have the starting point at
+that position. So, we need to move the starting point of those two edges
+to <code>[0.5     0.5     ]</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">first_path</span> <span class="o">=</span> <span class="n">edges_object</span><span class="o">.</span><span class="n">get_paths</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</span><span class='line'><span class="n">first_path</span><span class="o">.</span><span class="n">vertices</span>
+</span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">41</span><span class="p">]:</span>
+</span><span class='line'><span class="n">array</span><span class="p">([[</span> <span class="mf">0.17693707</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">],</span>
+</span><span class='line'>       <span class="p">[</span> <span class="mf">0.29792</span>   <span class="p">,</span>  <span class="mf">0.44577014</span><span class="p">]])</span>
+</span><span class='line'><span class="n">first_path</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+</span><span class='line'><span class="n">first_path</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+</span><span class='line'><span class="n">second_path</span> <span class="o">=</span> <span class="n">edges_object</span><span class="o">.</span><span class="n">get_paths</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'><span class="n">second_path</span><span class="o">.</span><span class="n">vertices</span>
+</span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">48</span><span class="p">]:</span>
+</span><span class='line'><span class="n">array</span><span class="p">([[</span> <span class="mf">0.17693707</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">],</span>
+</span><span class='line'>       <span class="p">[</span> <span class="mf">0.43349969</span><span class="p">,</span>  <span class="mf">0.12392229</span><span class="p">]])</span>
+</span><span class='line'><span class="n">second_path</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+</span><span class='line'><span class="n">second_path</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can now see the graph to be something like:
+<img src="images/figure_3.png"></p>
+
+<p>Now let&rsquo;s move the label to this position:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">label_object</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">get_children</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">label_object</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
+</span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">54</span><span class="p">]:</span> <span class="s">&#39;1&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">label_object</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+</span><span class='line'><span class="n">Out</span><span class="p">[</span><span class="mi">55</span><span class="p">]:</span> <span class="p">(</span><span class="mf">0.17693707256025257</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">label_object</span><span class="o">.</span><span class="n">set_position</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can now see the graph to be like:
+<img src="images/figure_4.png">
+So finally we have moved the node to a new position. Because networkX uses
+collection objects to draw the graph, we don&rsquo;t can&rsquo;t change many of the
+properties of the individual nodes or edges. For having better control over
+the properties I have rewritten the <code>nx.draw</code> module which draws the graphs
+normally without using the collection objects. You can check out the
+<a href="https://github.com/ankurankan">github repo</a>. Although creating an individual
+object for each node and edges is very memory inefficient when compared to
+the collection objects but gives much more control over the object. I will
+discuss this in detail later in another post. For now lets see a basic
+animation example.</p>
 
 <h3>Basic Animation</h3>
 
