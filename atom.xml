@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://ankurankan.github.io/atom.xml" rel="self"/>
   <link href="http://ankurankan.github.io/"/>
-  <updated>2013-10-15T18:48:08+05:30</updated>
+  <updated>2013-10-15T18:57:40+05:30</updated>
   <id>http://ankurankan.github.io/</id>
   <author>
     <name><![CDATA[Ankur Ankan]]></name>
@@ -41,7 +41,7 @@
 
 <p>In my case I get something like this:</p>
 
-<p><img src="images/figure_1.png"></p>
+<p><img src="http://s19.postimg.org/5zl0vjk0j/figure_1.png"></p>
 
 <p>You might get something different because networkX internally uses
 <code>matplotlib.scatter</code> which randomly generates the position of the nodes.</p>
@@ -223,7 +223,7 @@ and modify them.</p>
 
 
 <p>Now we get this output:
-<img src="images/figure_2.png">
+<img src="http://s19.postimg.org/s01dc62oj/figure_2.png">
 We see here that only the node has moved and the label and the edges are
 at their original position. We will now move the edges to the new node
 position.<br/>
@@ -336,7 +336,7 @@ to <code>[0.5     0.5     ]</code>.</p>
 
 
 <p>We can now see the graph to be something like:
-<img src="images/figure_3.png"></p>
+<img src="http://s19.postimg.org/3wfnkzqj7/figure_3.png"></p>
 
 <p>Now let&rsquo;s move the label to this position:</p>
 
@@ -366,7 +366,7 @@ to <code>[0.5     0.5     ]</code>.</p>
 
 
 <p>We can now see the graph to be like:
-<img src="images/figure_4.png">
+<img src="http://s19.postimg.org/se7r8vt3n/figure_4.png">
 So finally we have moved the node to a new position. Because networkX uses
 collection objects to draw the graph, we don&rsquo;t can&rsquo;t change many of the
 properties of the individual nodes or edges. For having better control over

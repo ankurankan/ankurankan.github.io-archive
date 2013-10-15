@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Animation, | My Octopress Blog]]></title>
   <link href="http://ankurankan.github.io/blog/categories/animation/atom.xml" rel="self"/>
   <link href="http://ankurankan.github.io/"/>
-  <updated>2013-10-15T18:48:08+05:30</updated>
+  <updated>2013-10-15T18:57:40+05:30</updated>
   <id>http://ankurankan.github.io/</id>
   <author>
     <name><![CDATA[Ankur Ankan]]></name>
@@ -32,7 +32,7 @@ G.add_edges_from([(1,2), (3,4), (2,5), (4,5), (6,7), (8,9), (4,7), (1,7), (3,5),
 ```
 In my case I get something like this:</p>
 
-<p><img src="images/figure_1.png"></p>
+<p><img class="<a" src="href="http://s19.postimg.org/5zl0vjk0j/figure_1.png">http://s19.postimg.org/5zl0vjk0j/figure_1.png</a>"></p>
 
 <p>You might get something different because networkX internally uses
 <code>matplotlib.scatter</code> which randomly generates the position of the nodes.</p>
@@ -135,7 +135,7 @@ array([[ 1.        ,  0.31732594],</p>
 <p>In [38]: plt.draw()
 <code>``
 Now we get this output:
-<img src="images/figure_2.png">
+<img src="http://s19.postimg.org/s01dc62oj/figure_2.png">
 We see here that only the node has moved and the label and the edges are
 at their original position. We will now move the edges to the new node
 position.  
@@ -205,7 +205,7 @@ second_path.vertices[0][1] = 0.5</p>
 <p>plt.draw()
 ```
 We can now see the graph to be something like:
-<img src="images/figure_3.png"></p>
+<img class="<a" src="href="http://s19.postimg.org/3wfnkzqj7/figure_3.png">http://s19.postimg.org/3wfnkzqj7/figure_3.png</a>"></p>
 
 <p>Now let&rsquo;s move the label to this position:
 ```python
@@ -222,7 +222,7 @@ Out[55]: (0.17693707256025257, 0.0)</p>
 <p>plt.draw()
 <code>``
 We can now see the graph to be like:
-<img src="images/figure_4.png">
+<img src="http://s19.postimg.org/se7r8vt3n/figure_4.png">
 So finally we have moved the node to a new position. Because networkX uses
 collection objects to draw the graph, we don't can't change many of the
 properties of the individual nodes or edges. For having better control over
