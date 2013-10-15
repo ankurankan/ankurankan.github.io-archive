@@ -18,7 +18,7 @@ nx.draw(G)
 ```
 In my case I get something like this:
 
-{% img images/figure_1.png %}
+{% img http://s19.postimg.org/5zl0vjk0j/figure_1.png %}
 
 You might get something different because networkX internally uses 
 `matplotlib.scatter` which randomly generates the position of the nodes.
@@ -119,7 +119,7 @@ In [37]: offsets[0][1] = 0.5
 In [38]: plt.draw()
 ```
 Now we get this output:
-{% img images/figure_2.png %}
+{% img http://s19.postimg.org/s01dc62oj/figure_2.png %}
 We see here that only the node has moved and the label and the edges are 
 at their original position. We will now move the edges to the new node
 position.  
@@ -183,7 +183,7 @@ second_path.vertices[0][1] = 0.5
 plt.draw()
 ```
 We can now see the graph to be something like:
-{% img images/figure_3.png %}
+{% img http://s19.postimg.org/3wfnkzqj7/figure_3.png %}
 
 Now let's move the label to this position:
 ```python
@@ -200,7 +200,7 @@ label_object.set_position((0.5, 0.5))
 plt.draw()
 ```
 We can now see the graph to be like:
-{% img images/figure_4.png %}
+{% img http://s19.postimg.org/se7r8vt3n/figure_4.png %}
 So finally we have moved the node to a new position. Because networkX uses
 collection objects to draw the graph, we don't can't change many of the
 properties of the individual nodes or edges. For having better control over
