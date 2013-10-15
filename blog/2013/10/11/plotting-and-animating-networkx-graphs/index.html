@@ -9,8 +9,8 @@
   <meta name="author" content="Ankur Ankan">
 
   
-  <meta name="description" content="Basic Animation Let&rsquo;s start with a very simple color changing animation in which we will draw
-a graph whose nodes will change color. Here in &hellip;">
+  <meta name="description" content="Modifying neworkX graph using Matplotlib Let&rsquo;s dive deeper into how does networkX internally draws graphs.
+Taking a quick look of all the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -92,105 +92,7 @@ a graph whose nodes will change color. Here in &hellip;">
   </header>
 
 
-<div class="entry-content"><h3>Basic Animation</h3>
-
-<p>Let&rsquo;s start with a very simple color changing animation in which we will draw
-a graph whose nodes will change color. Here in each iteration we are drawing
-a new graph over the previous ones with different node colors. This is a
-very bad approach but let&rsquo;s just start with this. I will write about better
-ways to do it in the next post.</p>
-
-<p>I will be using <code>networkX</code> for drawing the graphs and <code>matplotlib</code> for
-animation.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">matplotlib.animation</span> <span class="kn">as</span> <span class="nn">animation</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">random</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Graph initialization</span>
-</span><span class='line'><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-</span><span class='line'><span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
-</span><span class='line'><span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">)])</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Animation funciton</span>
-</span><span class='line'><span class="n">define</span> <span class="n">animate</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="s">&#39;m&#39;</span><span class="p">]</span>
-</span><span class='line'>    <span class="n">nx</span><span class="o">.</span><span class="n">draw_circular</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">)]</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">nx</span><span class="o">.</span><span class="n">draw_circular</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-</span><span class='line'><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Animator call</span>
-</span><span class='line'><span class="n">anim</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FuncAnimation</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">animate</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">blit</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Let&rsquo;s step through and see what&rsquo;s happening. In the first four lines we are
-importing <code>networkX</code>, <code>matplotlib.animation</code>, <code>matplotlib.pyplot</code> and <code>random</code>
-modules.</p>
-
-<p>In the next few lines we create a graph using networkX:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-</span><span class='line'><span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
-</span><span class='line'><span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">)])</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>First we initialize an empty graph <code>G</code>. Then we add 9 nodes and 13 edges to it.</p>
-
-<p>This next piece is the animation function which takes a single parameter <code>i</code>
- which is the frame number of the animation.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">define</span> <span class="n">animate</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="s">&#39;m&#39;</span><span class="p">]</span>
-</span><span class='line'>    <span class="n">nx</span><span class="o">.</span><span class="n">draw_circular</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">)]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Here the <code>colors</code> list is a list of colors from which we will be randomly
-picking up colors for our nodes.
-<code>nx.draw_circular</code> draws the graph keeping the nodes in a circular pattern.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">anim</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FuncAnimation</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">animate</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">blit</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>animation.FuncAnimation</code> repeatedly calls the animate fucntion incrementing
-<code>i</code> in each iteration.
-<code>frames</code> define the number of times animate function is called,
-<code>interval</code> is the inverval between each call.
-<code>blit=True</code> defines to draw only those parts which have changed.</p>
-
-<h3>Modifying neworkX graph using Matplotlib</h3>
+<div class="entry-content"><h3>Modifying neworkX graph using Matplotlib</h3>
 
 <p>Let&rsquo;s dive deeper into how does networkX internally draws graphs.
 Taking a quick look of all the children of the plot.</p>
@@ -358,6 +260,104 @@ position.
 networkX uses <code>matplotlib.scatter</code> to draw nodes and then draws the edges.
 And as we know matplotlib.scatter creates a node collection object and edges
 colleciton object. We can see the properties of node_collection object as</p>
+
+<h3>Basic Animation</h3>
+
+<p>Let&rsquo;s start with a very simple color changing animation in which we will draw
+a graph whose nodes will change color. Here in each iteration we are drawing
+a new graph over the previous ones with different node colors. This is a
+very bad approach but let&rsquo;s just start with this. I will write about better
+ways to do it in the next post.</p>
+
+<p>I will be using <code>networkX</code> for drawing the graphs and <code>matplotlib</code> for
+animation.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">matplotlib.animation</span> <span class="kn">as</span> <span class="nn">animation</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">random</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Graph initialization</span>
+</span><span class='line'><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+</span><span class='line'><span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+</span><span class='line'><span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">)])</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Animation funciton</span>
+</span><span class='line'><span class="n">define</span> <span class="n">animate</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="s">&#39;m&#39;</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">nx</span><span class="o">.</span><span class="n">draw_circular</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">)]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">nx</span><span class="o">.</span><span class="n">draw_circular</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+</span><span class='line'><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Animator call</span>
+</span><span class='line'><span class="n">anim</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FuncAnimation</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">animate</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">blit</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Let&rsquo;s step through and see what&rsquo;s happening. In the first four lines we are
+importing <code>networkX</code>, <code>matplotlib.animation</code>, <code>matplotlib.pyplot</code> and <code>random</code>
+modules.</p>
+
+<p>In the next few lines we create a graph using networkX:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+</span><span class='line'><span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+</span><span class='line'><span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">)])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>First we initialize an empty graph <code>G</code>. Then we add 9 nodes and 13 edges to it.</p>
+
+<p>This next piece is the animation function which takes a single parameter <code>i</code>
+ which is the frame number of the animation.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">define</span> <span class="n">animate</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">,</span> <span class="s">&#39;y&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="s">&#39;m&#39;</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">nx</span><span class="o">.</span><span class="n">draw_circular</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">)]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here the <code>colors</code> list is a list of colors from which we will be randomly
+picking up colors for our nodes.
+<code>nx.draw_circular</code> draws the graph keeping the nodes in a circular pattern.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">anim</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FuncAnimation</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">animate</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">blit</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>animation.FuncAnimation</code> repeatedly calls the animate fucntion incrementing
+<code>i</code> in each iteration.
+<code>frames</code> define the number of times animate function is called,
+<code>interval</code> is the inverval between each call.
+<code>blit=True</code> defines to draw only those parts which have changed.</p>
 </div>
 
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Animation, | My Octopress Blog]]></title>
   <link href="http://ankurankan.github.io/blog/categories/animation/atom.xml" rel="self"/>
   <link href="http://ankurankan.github.io/"/>
-  <updated>2013-10-12T13:05:34+05:30</updated>
+  <updated>2013-10-15T11:15:09+05:30</updated>
   <id>http://ankurankan.github.io/</id>
   <author>
     <name><![CDATA[Ankur Ankan]]></name>
@@ -18,80 +18,7 @@
     <link href="http://ankurankan.github.io/blog/2013/10/11/plotting-and-animating-networkx-graphs/"/>
     <updated>2013-10-11T23:04:00+05:30</updated>
     <id>http://ankurankan.github.io/blog/2013/10/11/plotting-and-animating-networkx-graphs</id>
-    <content type="html"><![CDATA[<h3>Basic Animation</h3>
-
-<p>Let&rsquo;s start with a very simple color changing animation in which we will draw
-a graph whose nodes will change color. Here in each iteration we are drawing
-a new graph over the previous ones with different node colors. This is a
-very bad approach but let&rsquo;s just start with this. I will write about better
-ways to do it in the next post.</p>
-
-<p>I will be using <code>networkX</code> for drawing the graphs and <code>matplotlib</code> for
-animation.
-```python
-import networkx as nx
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
-import random</p>
-
-<h1>Graph initialization</h1>
-
-<p>G = nx.Graph()
-G.add_nodes_from([1, 2, 3, 4, 5, 6, 7, 8, 9])
-G.add_edges_from([(1,2), (3,4), (2,5), (4,5), (6,7), (8,9), (4,7), (1,7), (3,5), (2,7), (5,8), (2,9), (5,7)])</p>
-
-<h1>Animation funciton</h1>
-
-<p>define animate(i):</p>
-
-<pre><code>colors = ['r', 'b', 'g', 'y', 'w', 'm']
-nx.draw_circular(G, node_color=[random.choice(colors) for j in range(9)]
-</code></pre>
-
-<p>nx.draw_circular(G)
-fig = plt.gcf()</p>
-
-<h1>Animator call</h1>
-
-<p>anim = animation.FuncAnimation(fig, animate, frames=20, interval=20, blit=True)
-```</p>
-
-<p>Let&rsquo;s step through and see what&rsquo;s happening. In the first four lines we are
-importing <code>networkX</code>, <code>matplotlib.animation</code>, <code>matplotlib.pyplot</code> and <code>random</code>
-modules.</p>
-
-<p>In the next few lines we create a graph using networkX:
-<code>python
-G = nx.Graph()                                                             
-G.add_nodes_from([1, 2, 3, 4, 5, 6, 7, 8, 9])
-G.add_edges_from([(1,2), (3,4), (2,5), (4,5), (6,7), (8,9), (4,7), (1,7), (3,5), (2,7), (5,8), (2,9), (5,7)])
-</code>
-First we initialize an empty graph <code>G</code>. Then we add 9 nodes and 13 edges to it.</p>
-
-<p>This next piece is the animation function which takes a single parameter <code>i</code>
- which is the frame number of the animation.
-```python
-define animate(i):</p>
-
-<pre><code>colors = ['r', 'b', 'g', 'y', 'w', 'm']                                
-nx.draw_circular(G, node_color=[random.choice(colors) for j in range(9)]   
-</code></pre>
-
-<p><code>``
-Here the</code>colors<code>list is a list of colors from which we will be randomly
-picking up colors for our nodes.
-</code>nx.draw_circular` draws the graph keeping the nodes in a circular pattern.</p>
-
-<p><code>python
-anim = animation.FuncAnimation(fig, animate, frames=20, interval=20, blit=True)
-</code>
-<code>animation.FuncAnimation</code> repeatedly calls the animate fucntion incrementing
-<code>i</code> in each iteration.
-<code>frames</code> define the number of times animate function is called,
-<code>interval</code> is the inverval between each call.
-<code>blit=True</code> defines to draw only those parts which have changed.</p>
-
-<h3>Modifying neworkX graph using Matplotlib</h3>
+    <content type="html"><![CDATA[<h3>Modifying neworkX graph using Matplotlib</h3>
 
 <p>Let&rsquo;s dive deeper into how does networkX internally draws graphs.
 Taking a quick look of all the children of the plot.
@@ -189,6 +116,79 @@ position.
 networkX uses <code>matplotlib.scatter</code> to draw nodes and then draws the edges.
 And as we know matplotlib.scatter creates a node collection object and edges
 colleciton object. We can see the properties of node_collection object as</p>
+
+<h3>Basic Animation</h3>
+
+<p>Let&rsquo;s start with a very simple color changing animation in which we will draw
+a graph whose nodes will change color. Here in each iteration we are drawing
+a new graph over the previous ones with different node colors. This is a
+very bad approach but let&rsquo;s just start with this. I will write about better
+ways to do it in the next post.</p>
+
+<p>I will be using <code>networkX</code> for drawing the graphs and <code>matplotlib</code> for
+animation.
+```python
+import networkx as nx
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+import random</p>
+
+<h1>Graph initialization</h1>
+
+<p>G = nx.Graph()
+G.add_nodes_from([1, 2, 3, 4, 5, 6, 7, 8, 9])
+G.add_edges_from([(1,2), (3,4), (2,5), (4,5), (6,7), (8,9), (4,7), (1,7), (3,5), (2,7), (5,8), (2,9), (5,7)])</p>
+
+<h1>Animation funciton</h1>
+
+<p>define animate(i):</p>
+
+<pre><code>colors = ['r', 'b', 'g', 'y', 'w', 'm']
+nx.draw_circular(G, node_color=[random.choice(colors) for j in range(9)]
+</code></pre>
+
+<p>nx.draw_circular(G)
+fig = plt.gcf()</p>
+
+<h1>Animator call</h1>
+
+<p>anim = animation.FuncAnimation(fig, animate, frames=20, interval=20, blit=True)
+```</p>
+
+<p>Let&rsquo;s step through and see what&rsquo;s happening. In the first four lines we are
+importing <code>networkX</code>, <code>matplotlib.animation</code>, <code>matplotlib.pyplot</code> and <code>random</code>
+modules.</p>
+
+<p>In the next few lines we create a graph using networkX:
+<code>python
+G = nx.Graph()                                                             
+G.add_nodes_from([1, 2, 3, 4, 5, 6, 7, 8, 9])
+G.add_edges_from([(1,2), (3,4), (2,5), (4,5), (6,7), (8,9), (4,7), (1,7), (3,5), (2,7), (5,8), (2,9), (5,7)])
+</code>
+First we initialize an empty graph <code>G</code>. Then we add 9 nodes and 13 edges to it.</p>
+
+<p>This next piece is the animation function which takes a single parameter <code>i</code>
+ which is the frame number of the animation.
+```python
+define animate(i):</p>
+
+<pre><code>colors = ['r', 'b', 'g', 'y', 'w', 'm']                                
+nx.draw_circular(G, node_color=[random.choice(colors) for j in range(9)]   
+</code></pre>
+
+<p><code>``
+Here the</code>colors<code>list is a list of colors from which we will be randomly
+picking up colors for our nodes.
+</code>nx.draw_circular` draws the graph keeping the nodes in a circular pattern.</p>
+
+<p><code>python
+anim = animation.FuncAnimation(fig, animate, frames=20, interval=20, blit=True)
+</code>
+<code>animation.FuncAnimation</code> repeatedly calls the animate fucntion incrementing
+<code>i</code> in each iteration.
+<code>frames</code> define the number of times animate function is called,
+<code>interval</code> is the inverval between each call.
+<code>blit=True</code> defines to draw only those parts which have changed.</p>
 ]]></content>
   </entry>
   
