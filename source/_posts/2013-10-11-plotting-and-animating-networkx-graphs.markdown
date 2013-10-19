@@ -201,16 +201,10 @@ plt.draw()
 ```
 We can now see the graph to be like:
 {% img http://s19.postimg.org/se7r8vt3n/figure_4.png %}
-So finally we have moved the node to a new position. Because networkX uses
-collection objects to draw the graph, we don't can't change many of the
-properties of the individual nodes or edges. For having better control over
-the properties I have rewritten the `nx.draw` module which draws the graphs
-normally without using the collection objects. You can check out the 
-[github repo](https://github.com/ankurankan). Although creating an individual
-object for each node and edges is very memory inefficient when compared to
-the collection objects but gives much more control over the object. I will 
-discuss this in detail later in another post. For now lets see a basic
-animation example.
+So, finally we have moved the node to a new position. For having better 
+control over the properties I have rewritten the `nx_pyplot` module which 
+adds many functions to manipulate the graph. You can check out the 
+[github repo](https://github.com/ankurankan).
 ### Basic Animation
 Let's start with a very simple color changing animation in which we will draw 
 a graph whose nodes will change color. Here in each iteration we are drawing 
