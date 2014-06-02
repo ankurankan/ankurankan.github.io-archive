@@ -1,0 +1,449 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Custom assert method in Python - My Octopress Blog</title>
+  <meta name="author" content="Ankur Ankan">
+
+  
+  <meta name="description" content="While writing tests we often need to compare objects defined by
+us and we then have to compare each attribute of the object one
+by one. Let&rsquo;s &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ankurankan.github.io/blog/2014/06/02/custom-assert-method-in-python">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-44861589-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ankurankan.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Custom Assert Method in Python</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-02T14:19:00+00:00" pubdate data-updated="true">Jun 2<span>nd</span>, 2014</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://ankurankan.github.io">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>While writing tests we often need to compare objects defined by
+us and we then have to compare each attribute of the object one
+by one.</p>
+
+<p>Let&rsquo;s take an example of a simple <code>Car</code> class. The Car object has
+two attributes <code>speed</code> and <code>color</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Car</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="n">speed</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So if you try writing test for it using <code>unittest.TestCase.AssertEqual</code>
+method.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">unittest</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TestCar</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">test_car_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>       <span class="n">car1</span> <span class="o">=</span> <span class="n">Car</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">)</span>
+</span><span class='line'>       <span class="n">car2</span> <span class="o">=</span> <span class="n">Car</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">)</span>
+</span><span class='line'>       <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">car1</span><span class="p">,</span> <span class="n">car2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you now try to run this test, the test case will fail.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">Car</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">),</span> <span class="n">Car</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">))</span>
+</span><span class='line'><span class="ne">AssertionError</span><span class="p">:</span> <span class="o">&lt;</span><span class="k">assert</span><span class="o">.</span><span class="n">Car</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f8edbc078d0</span><span class="o">&gt;</span> <span class="o">!=</span> <span class="o">&lt;</span><span class="k">assert</span><span class="o">.</span><span class="n">Car</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f8edbc07908</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is because unittest doesn&rsquo;t know how to compare two <code>Car</code> objects.</p>
+
+<p>So, we have a two options to make this work:
+1. We can define a <code>__eq__</code> method in <code>Car</code> class.
+2. We can create a custom assertion class.</p>
+
+<h3>1. <code>__eq__</code> method</h3>
+
+<p><code>__eq__</code> is one of the rich comparison methods. Whenever <code>==</code> is used on any object
+its <code>__eq__</code> method is called. For example <code>car1==car2</code> internally calls <code>car1.__eq__(car2)</code>.
+Our new car class:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Car</span><span class="p">:</span>
+</span><span class='line'>   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="n">speed</span>
+</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">another_car</span><span class="p">):</span>
+</span><span class='line'>       <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">==</span><span class="nb">type</span><span class="p">(</span><span class="n">another_car</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="o">==</span><span class="n">another_car</span><span class="o">.</span><span class="n">speed</span> <span class="ow">and</span>
+</span><span class='line'>               <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="o">==</span><span class="n">another_car</span><span class="o">.</span><span class="n">color</span><span class="p">:</span>
+</span><span class='line'>           <span class="k">return</span> <span class="bp">True</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>           <span class="k">return</span> <span class="bp">False</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And now the same test passes. But when <code>car1</code> is not equal to <code>car2</code>, the test fails
+and the output is not at all informative about why the test failed. It simply prints:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">car1</span><span class="p">,</span> <span class="n">car2</span><span class="p">)</span>
+</span><span class='line'><span class="ne">AssertionError</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">Car</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f1f86af6a20</span><span class="o">&gt;</span> <span class="o">!=</span> <span class="o">&lt;</span><span class="n">Car</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f1f86af6a58</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, one drawback of this approach is that we can&rsquo;t show some message about why the
+equality failed. Showing an error message by printing it wouldn&rsquo;t be a good design
+because when the user does a simple <code>car1==car2</code> and if they are not equal, <code>__eq__</code>
+would still print the details of why they are not equal.</p>
+
+<p>Now, we see the second approach in which we can give a detail message about why
+the equality failed.</p>
+
+<h3>2. Custom assertion class</h3>
+
+<p>We can write a custom assertion class for out <code>car</code> class.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">AssertCarEqual</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">assert_car_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">car1</span><span class="p">,</span> <span class="n">car2</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">car1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">car2</span><span class="p">):</span>
+</span><span class='line'>            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&quot;car1 is of type: &quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">car1</span><span class="p">),</span> <span class="s">&quot; and car2 is of type: &quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">car2</span><span class="p">))</span>
+</span><span class='line'>        <span class="k">elif</span> <span class="n">car1</span><span class="o">.</span><span class="n">speed</span> <span class="o">!=</span> <span class="n">car2</span><span class="o">.</span><span class="n">speed</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&quot;speed of car1: &quot;</span><span class="p">,</span> <span class="n">car1</span><span class="o">.</span><span class="n">speed</span><span class="p">,</span> <span class="s">&quot; and speed of car2: &quot;</span><span class="p">,</span> <span class="n">car2</span><span class="o">.</span><span class="n">speed</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">elif</span> <span class="n">car1</span><span class="o">.</span><span class="n">color</span> <span class="o">!=</span> <span class="n">car2</span><span class="o">.</span><span class="n">color</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&quot;color of car1: &quot;</span><span class="p">,</span> <span class="n">car1</span><span class="o">.</span><span class="n">color</span><span class="p">,</span> <span class="s">&quot; and color of car2: &quot;</span><span class="p">,</span> <span class="n">car2</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And modifying the test like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">TestCar</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">,</span> <span class="n">AssertCarEqual</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">test_car_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">car1</span> <span class="o">=</span> <span class="n">car</span><span class="o">.</span><span class="n">Car</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="s">&#39;blue&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">car2</span> <span class="o">=</span> <span class="n">car</span><span class="o">.</span><span class="n">Car</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">assert_car_equal</span><span class="p">(</span><span class="n">car1</span><span class="p">,</span><span class="n">car2</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now when we run the test, the test fails and gives a message about
+why the test failed.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&quot;color of car1: &quot;</span><span class="p">,</span> <span class="n">car1</span><span class="o">.</span><span class="n">color</span><span class="p">,</span> <span class="s">&quot; and color of car2: &quot;</span><span class="p">,</span> <span class="n">car2</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+</span><span class='line'><span class="ne">AssertionError</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;color of car1: &#39;</span><span class="p">,</span> <span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="s">&#39; and color of car2: &#39;</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Ankur Ankan</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-02T14:19:00+00:00" pubdate data-updated="true">Jun 2<span>nd</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/assert/'>assert</a>, <a class='category' href='/blog/categories/python/'>python,</a>, <a class='category' href='/blog/categories/testing/'>testing,</a>, <a class='category' href='/blog/categories/unittest/'>unittest,</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://ankurankan.github.io/blog/2014/06/02/custom-assert-method-in-python/" data-via="" data-counturl="http://ankurankan.github.io/blog/2014/06/02/custom-assert-method-in-python/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/10/11/plotting-and-animating-networkx-graphs/" title="Previous Post: Plotting and Animating NetworkX graphs">&laquo; Plotting and Animating NetworkX graphs</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/06/02/custom-assert-method-in-python/">Custom Assert Method in Python</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/11/plotting-and-animating-networkx-graphs/">Plotting and Animating NetworkX Graphs</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/ankurankan">@ankurankan</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'ankurankan',
+            count: 3,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/115824642780532472937?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Ankur Ankan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'ankurankan-github';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ankurankan.github.io/blog/2014/06/02/custom-assert-method-in-python/';
+        var disqus_url = 'http://ankurankan.github.io/blog/2014/06/02/custom-assert-method-in-python/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

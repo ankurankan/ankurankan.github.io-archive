@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
+    <url>
+        <loc>
+            http://ankurankan.github.io/blog/2013/10/11/plotting-and-animating-networkx-graphs/
+        </loc>
+        <lastmod>2014-06-02T17:16:28+00:00</lastmod>
+    </url>
+    <url>
+        <loc>http://ankurankan.github.io/blog/2014/06/02/custom-assert-method-in-python/</loc>
+        <lastmod>2014-06-02T17:16:28+00:00</lastmod>
+    </url>
+    <url>
+        <loc>http://ankurankan.github.io/blog/archives/</loc>
+        <lastmod>2014-06-02T17:16:28+00:00</lastmod>
+    </url>
+    <url>
+        <loc>http://ankurankan.github.io/robots.txt</loc>
+        <lastmod>2014-06-02T17:16:28+00:00</lastmod>
+    </url>
+    <url>
+        <loc>http://ankurankan.github.io/</loc>
+        <lastmod>2014-06-02T17:16:28+00:00</lastmod>
+    </url>
+</urlset>

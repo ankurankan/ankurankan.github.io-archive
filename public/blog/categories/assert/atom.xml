@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: assert | My Octopress Blog]]></title>
+  <link href="http://ankurankan.github.io/blog/categories/assert/atom.xml" rel="self"/>
+  <link href="http://ankurankan.github.io/"/>
+  <updated>2014-06-02T17:17:07+00:00</updated>
+  <id>http://ankurankan.github.io/</id>
+  <author>
+    <name><![CDATA[Ankur Ankan]]></name>
+    <email><![CDATA[ankurankan@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Custom assert method in Python]]></title>
+    <link href="http://ankurankan.github.io/blog/2014/06/02/custom-assert-method-in-python/"/>
+    <updated>2014-06-02T14:19:00+00:00</updated>
+    <id>http://ankurankan.github.io/blog/2014/06/02/custom-assert-method-in-python</id>
+    <content type="html"><![CDATA[<p>While writing tests we often need to compare objects defined by
+us and we then have to compare each attribute of the object one
+by one.</p>
+
+<p>Let&rsquo;s take an example of a simple <code>Car</code> class. The Car object has
+two attributes <code>speed</code> and <code>color</code>.</p>
+
+<p>```python
+class Car:</p>
+
+<pre><code>def __init__(self, speed, color):
+    self.speed = speed
+    self.color = color
+</code></pre>
+
+<p>```</p>
+
+<p>So if you try writing test for it using <code>unittest.TestCase.AssertEqual</code>
+method.</p>
+
+<p>```python
+import unittest</p>
+
+<p>class TestCar(unittest.TestCase):</p>
+
+<pre><code>def test_car_equal(self):
+   car1 = Car(40, 'red')
+   car2 = Car(40, 'red')
+   self.assertEqual(car1, car2) 
+</code></pre>
+
+<p><code>
+If you now try to run this test, the test case will fail.
+</code>python</p>
+
+<pre><code>self.assertEqual(Car(40, 'red'), Car(40, 'red'))
+</code></pre>
+
+<p>AssertionError: &lt;assert.Car object at 0x7f8edbc078d0> != &lt;assert.Car object at 0x7f8edbc07908>
+<code>``
+This is because unittest doesn't know how to compare two</code>Car` objects.</p>
+
+<p>So, we have a two options to make this work:
+1. We can define a <code>__eq__</code> method in <code>Car</code> class.
+2. We can create a custom assertion class.</p>
+
+<h3>1. <code>__eq__</code> method</h3>
+
+<p><code>__eq__</code> is one of the rich comparison methods. Whenever <code>==</code> is used on any object
+its <code>__eq__</code> method is called. For example <code>car1==car2</code> internally calls <code>car1.__eq__(car2)</code>.
+Our new car class:
+```python
+class Car:
+   def <strong>init</strong>(self, speed, color):</p>
+
+<pre><code>  self.speed = speed
+  self.color = color
+</code></pre>
+
+<p>   def <strong>eq</strong>(self, another_car):</p>
+
+<pre><code>   if type(self)==type(another_car) and self.speed==another_car.speed and
+           self.color==another_car.color:
+       return True
+    else:
+       return False
+</code></pre>
+
+<p><code>
+And now the same test passes. But when `car1` is not equal to `car2`, the test fails
+and the output is not at all informative about why the test failed. It simply prints:
+</code></p>
+
+<pre><code>self.assertEqual(car1, car2)
+</code></pre>
+
+<p>AssertionError: <Car object at 0x7f1f86af6a20> != <Car object at 0x7f1f86af6a58>
+```</p>
+
+<p>So, one drawback of this approach is that we can&rsquo;t show some message about why the
+equality failed. Showing an error message by printing it wouldn&rsquo;t be a good design
+because when the user does a simple <code>car1==car2</code> and if they are not equal, <code>__eq__</code>
+would still print the details of why they are not equal.</p>
+
+<p>Now, we see the second approach in which we can give a detail message about why
+the equality failed.</p>
+
+<h3>2. Custom assertion class</h3>
+
+<p>We can write a custom assertion class for out <code>car</code> class.
+```python
+class AssertCarEqual:</p>
+
+<pre><code>def assert_car_equal(self, car1, car2):
+    if type(car1) != type(car2):
+        raise AssertionError("car1 is of type: ", type(car1), " and car2 is of type: ", type(car2))
+    elif car1.speed != car2.speed:
+        raise AssertionError("speed of car1: ", car1.speed, " and speed of car2: ", car2.speed)
+    elif car1.color != car2.color:
+        raise AssertionError("color of car1: ", car1.color, " and color of car2: ", car2.color)
+</code></pre>
+
+<p><code>
+And modifying the test like this:
+</code>python
+class TestCar(unittest.TestCase, AssertCarEqual):</p>
+
+<pre><code>def test_car_equal(self):
+    car1 = car.Car(40, 'blue')
+    car2 = car.Car(40, 'red')
+    self.assert_car_equal(car1,car2)
+</code></pre>
+
+<p><code>
+Now when we run the test, the test fails and gives a message about
+why the test failed.
+</code></p>
+
+<pre><code>raise AssertionError("color of car1: ", car1.color, " and color of car2: ", car2.color)
+</code></pre>
+
+<p>AssertionError: (&lsquo;color of car1: &rsquo;, &lsquo;blue&rsquo;, &lsquo; and color of car2: &rsquo;, &lsquo;red&rsquo;)
+```</p>
+]]></content>
+  </entry>
+  
+</feed>
