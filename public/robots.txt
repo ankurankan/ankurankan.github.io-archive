@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: 
-
-Sitemap: http://ankurankan.github.io/sitemap.xml 
