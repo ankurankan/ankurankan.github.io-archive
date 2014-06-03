@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Animation, | My Octopress Blog]]></title>
+  <link href="http://ankurankan.github.io/blog/categories/animation/atom.xml" rel="self"/>
+  <link href="http://ankurankan.github.io/"/>
+  <updated>2013-10-19T18:10:22+05:30</updated>
+  <id>http://ankurankan.github.io/</id>
+  <author>
+    <name><![CDATA[Ankur Ankan]]></name>
+    <email><![CDATA[ankurankan@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Plotting and Animating NetworkX graphs]]></title>
+    <link href="http://ankurankan.github.io/blog/2013/10/11/plotting-and-animating-networkx-graphs/"/>
+    <updated>2013-10-11T23:04:00+05:30</updated>
+    <id>http://ankurankan.github.io/blog/2013/10/11/plotting-and-animating-networkx-graphs</id>
+    <content type="html"><![CDATA[<h3>Modifying neworkX graph using Matplotlib</h3>
+
+<p>Let&rsquo;s start with plotting a simple graph using <code>nx.draw</code>:
+```python
+import networkx as nx</p>
+
+<p>G = nx.Graph()
+G.add_nodes_from([1, 2, 3, 4, 5, 6, 7, 8, 9])
+G.add_edges_from([(1,2), (3,4), (2,5), (4,5), (6,7), (8,9), (4,7), (1,7), (3,5), (2,7), (5,8), (2,9), (5,7)])</p>
+
+<p>nx.draw(G)
+```
+In my case I get something like this:</p>
+
+<p><img class="<a" src="href="http://s19.postimg.org/5zl0vjk0j/figure_1.png">http://s19.postimg.org/5zl0vjk0j/figure_1.png</a>"></p>
+
+<p>You might get something different because networkX internally uses
+<code>matplotlib.scatter</code> which randomly generates the position of the nodes.</p>
+
+<p>Now let&rsquo;s dive deeper into how does networkX internally draws graphs.
+Taking a quick look of all the children of the plot.
+```python
+fig = plt.gcf()</p>
+
+<p>axes = plt.gca()</p>
+
+<p>axes.get_children()
+Out[14]:
+[&lt;matplotlib.axis.XAxis at 0x1bed4d0>,
+ &lt;matplotlib.axis.YAxis at 0x30457d0>,
+ &lt;matplotlib.text.Text at 0x30613d0>,
+ &lt;matplotlib.text.Text at 0x3061310>,
+ &lt;matplotlib.text.Text at 0x3061550>,
+ &lt;matplotlib.text.Text at 0x30615d0>,
+ &lt;matplotlib.text.Text at 0x3061650>,
+ &lt;matplotlib.text.Text at 0x30616d0>,
+ &lt;matplotlib.text.Text at 0x3061750>,
+ &lt;matplotlib.text.Text at 0x30617d0>,
+ &lt;matplotlib.text.Text at 0x3061890>,
+ &lt;matplotlib.collections.PathCollection at 0x305d4d0>,
+ &lt;matplotlib.collections.LineCollection at 0x305dc50>,
+ &lt;matplotlib.text.Text at 0x30514d0>,
+ &lt;matplotlib.patches.Rectangle at 0x3051550>,
+ &lt;matplotlib.spines.Spine at 0x303ec90>,
+ &lt;matplotlib.spines.Spine at 0x303e990>,
+ &lt;matplotlib.spines.Spine at 0x303eb10>,
+ &lt;matplotlib.spines.Spine at 0x303e7d0>]
+<code>
+Here we see there are 9 `matplotlib.text.Text` objects which are the labels
+on the nodes. Let's see some of the properties of one of the text objects.
+</code>python
+text_object = axes.get_children()[2]</p>
+
+<p>text_object.get_text()
+Out[13]: &lsquo;1&rsquo;</p>
+
+<p>text_object.get_size()
+Out[14]: 12.0</p>
+
+<p>text_object.get_color()
+Out[15]: &lsquo;k&rsquo;</p>
+
+<p><code>``
+For the complete list of properties we can call the</code>properties<code>method.
+Example:</code>text_object.properties()`.</p>
+
+<p>Next object we see is the <code>matplotlib.collections.PathCollection</code> object which
+is the collection object of all the nodes. Now again we can see some properties
+and modify them.
+```python
+nodes = axes.get_children()[11]                 # Selecting the PathCollection object
+In [25]: nodes.get_pickradius()
+Out[25]: 5.0</p>
+
+<p>In [26]: nodes.get_label()
+Out[26]: &lsquo;_collection0&rsquo;</p>
+
+<p>In [27]: nodes.get_facecolor()
+Out[27]: array([[ 1.,  0.,  0.,  1.]])</p>
+
+<p>In [28]: nodes.get_edgecolors()
+Out[28]: array([[ 0.,  0.,  0.,  1.]])</p>
+
+<p>In [29]: nodes.get_linewidth()
+Out[29]: (1.0,)
+<code>
+We can change the properties:
+</code>python
+nodes.set_linewidth(2)
+nodes.set_pickradius(8)
+plt.draw()
+<code>
+Now with the `offsets` property we can change the position of the nodes.
+</code>python
+In [32]: offsets = nodes.get_offsets()</p>
+
+<p>In [33]: offsets
+Out[33]:
+array([[ 1.        ,  0.31732594],</p>
+
+<pre><code>   [ 0.60075321,  0.28045667],
+   [ 0.04382142,  0.98124087],
+   [ 0.38063134,  0.99245427],
+   [ 0.27586167,  0.61542286],
+   [ 0.9961299 ,  0.91637658],
+   [ 0.70916575,  0.66473314],
+   [ 0.        ,  0.23580501],
+   [ 0.28996686,  0.        ]])
+</code></pre>
+
+<p>In [35]: offsets[0][0] = 0.5</p>
+
+<p>In [37]: offsets[0][1] = 0.5</p>
+
+<p>In [38]: plt.draw()
+<code>``
+Now we get this output:
+<img src="http://s19.postimg.org/s01dc62oj/figure_2.png">
+We see here that only the node has moved and the label and the edges are
+at their original position. We will now move the edges to the new node
+position.  
+NetworkX uses</code>matplotlib.scatter<code>to draw nodes which creates a
+</code>collections.PathCollection<code>object and then draws the edges
+which is a</code>matplotlib.collections.LineCollection` object.</p>
+
+<p>We can modify many properties of the lines. But for now let&rsquo;s just move the
+two edges to the new position of their node.
+<code>python
+edges_object = axes.get_children()[12]              #selecting the LineCollection object
+edges_object.get_paths()
+Out[34]:
+[Path([[ 0.17693707  0.        ]
+ [ 0.29792     0.44577014]], None),
+ Path([[ 0.17693707  0.        ]
+ [ 0.43349969  0.12392229]], None),
+ Path([[ 0.29792     0.44577014]
+ [ 0.30217028  0.87528811]], None),
+ Path([[ 0.29792     0.44577014]
+ [ 0.70125136  0.42163912]], None),
+ Path([[ 0.29792     0.44577014]
+ [ 0.43349969  0.12392229]], None),
+ Path([[ 1.          0.3245961 ]
+ [ 0.8526191   0.04511872]], None),
+ Path([[ 1.          0.3245961 ]
+ [ 0.70125136  0.42163912]], None),
+ Path([[ 0.8526191   0.04511872]
+ [ 0.70125136  0.42163912]], None),
+ Path([[ 0.8526191   0.04511872]
+ [ 0.43349969  0.12392229]], None),
+ Path([[ 0.70125136  0.42163912]
+ [ 0.65698815  0.85722426]], None),
+ Path([[ 0.70125136  0.42163912]
+ [ 0.43349969  0.12392229]], None),
+ Path([[ 0.          0.24864231]
+ [ 0.43349969  0.12392229]], None),
+ Path([[ 0.65698815  0.85722426]
+ [ 0.30217028  0.87528811]], None)]
+</code>
+We see the 13 edges. The initial position of the moved node was <code>[0.176...  0.     ]</code>
+and we see here that the first and second paths have the starting point at
+that position. So, we need to move the starting point of those two edges
+to <code>[0.5     0.5     ]</code>.
+```python
+first_path = edges_object.get_paths()[0]
+first_path.vertices
+Out[41]:
+array([[ 0.17693707,  0.        ],</p>
+
+<pre><code>   [ 0.29792   ,  0.44577014]])
+</code></pre>
+
+<p>first_path.vertices[0][0] = 0.5
+first_path.vertices[0][1] = 0.5
+second_path = edges_object.get_paths()[1]
+second_path.vertices
+Out[48]:
+array([[ 0.17693707,  0.        ],</p>
+
+<pre><code>   [ 0.43349969,  0.12392229]])
+</code></pre>
+
+<p>second_path.vertices[0][0] = 0.5
+second_path.vertices[0][1] = 0.5</p>
+
+<p>plt.draw()
+```
+We can now see the graph to be something like:
+<img class="<a" src="href="http://s19.postimg.org/3wfnkzqj7/figure_3.png">http://s19.postimg.org/3wfnkzqj7/figure_3.png</a>"></p>
+
+<p>Now let&rsquo;s move the label to this position:
+```python
+label_object = axes.get_children()[2]</p>
+
+<p>label_object.get_text()
+Out[54]: &lsquo;1&rsquo;</p>
+
+<p>label_object.get_position()
+Out[55]: (0.17693707256025257, 0.0)</p>
+
+<p>label_object.set_position((0.5, 0.5))</p>
+
+<p>plt.draw()
+<code>``
+We can now see the graph to be like:
+<img src="http://s19.postimg.org/se7r8vt3n/figure_4.png">
+So, finally we have moved the node to a new position. For having better
+control over the properties I have rewritten the</code>nx_pyplot` module which
+adds many functions to manipulate the graph. You can check out the
+<a href="https://github.com/ankurankan">github repo</a>.</p>
+
+<h3>Basic Animation</h3>
+
+<p>Let&rsquo;s start with a very simple color changing animation in which we will draw
+a graph whose nodes will change color. Here in each iteration we are drawing
+a new graph over the previous ones with different node colors. This is a
+very bad approach but let&rsquo;s just start with this. I will write about better
+ways to do it in the next post.</p>
+
+<p>I will be using <code>networkX</code> for drawing the graphs and <code>matplotlib</code> for
+animation.
+```python
+import networkx as nx
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+import random</p>
+
+<h1>Graph initialization</h1>
+
+<p>G = nx.Graph()
+G.add_nodes_from([1, 2, 3, 4, 5, 6, 7, 8, 9])
+G.add_edges_from([(1,2), (3,4), (2,5), (4,5), (6,7), (8,9), (4,7), (1,7), (3,5), (2,7), (5,8), (2,9), (5,7)])</p>
+
+<h1>Animation funciton</h1>
+
+<p>define animate(i):</p>
+
+<pre><code>colors = ['r', 'b', 'g', 'y', 'w', 'm']
+nx.draw_circular(G, node_color=[random.choice(colors) for j in range(9)]
+</code></pre>
+
+<p>nx.draw_circular(G)
+fig = plt.gcf()</p>
+
+<h1>Animator call</h1>
+
+<p>anim = animation.FuncAnimation(fig, animate, frames=20, interval=20, blit=True)
+```</p>
+
+<p>Let&rsquo;s step through and see what&rsquo;s happening. In the first four lines we are
+importing <code>networkX</code>, <code>matplotlib.animation</code>, <code>matplotlib.pyplot</code> and <code>random</code>
+modules.</p>
+
+<p>In the next few lines we create a graph using networkX:
+<code>python
+G = nx.Graph()                                                             
+G.add_nodes_from([1, 2, 3, 4, 5, 6, 7, 8, 9])
+G.add_edges_from([(1,2), (3,4), (2,5), (4,5), (6,7), (8,9), (4,7), (1,7), (3,5), (2,7), (5,8), (2,9), (5,7)])
+</code>
+First we initialize an empty graph <code>G</code>. Then we add 9 nodes and 13 edges to it.</p>
+
+<p>This next piece is the animation function which takes a single parameter <code>i</code>
+ which is the frame number of the animation.
+```python
+def animate(i):</p>
+
+<pre><code>colors = ['r', 'b', 'g', 'y', 'w', 'm']                                
+nx.draw_circular(G, node_color=[random.choice(colors) for j in range(9)]   
+</code></pre>
+
+<p><code>``
+Here the</code>colors<code>list is a list of colors from which we will be randomly
+picking up colors for our nodes.
+</code>nx.draw_circular` draws the graph keeping the nodes in a circular pattern.</p>
+
+<p><code>python
+anim = animation.FuncAnimation(fig, animate, frames=20, interval=20, blit=True)
+</code>
+<code>animation.FuncAnimation</code> repeatedly calls the animate fucntion incrementing
+<code>i</code> in each iteration.
+<code>frames</code> define the number of times animate function is called,
+<code>interval</code> is the inverval between each call.
+<code>blit=True</code> defines to draw only those parts which have changed.</p>
+]]></content>
+  </entry>
+  
+</feed>
