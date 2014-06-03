@@ -155,15 +155,16 @@ method.</p>
 
 <p>This is because unittest doesn&rsquo;t know how to compare two <code>Car</code> objects.</p>
 
-<p>So, we have a two options to make this work:
-1. We can define a <code>__eq__</code> method in <code>Car</code> class.
+<p>So, we have a two options to make this work:<br/>
+1. We can define a <code>__eq__</code> method in <code>Car</code> class.<br/>
 2. We can create a custom assertion class.</p>
 
 <h3>1. <code>__eq__</code> method</h3>
 
 <p><code>__eq__</code> is one of the rich comparison methods. Whenever <code>==</code> is used on any object
-its <code>__eq__</code> method is called. For example <code>car1==car2</code> internally calls <code>car1.__eq__(car2)</code>.
-Our new car class:</p>
+its <code>__eq__</code> method is called. For example <code>car1 == car2</code> internally calls <code>car1.__eq__(car2)</code>.</p>
+
+<p>Our new car class:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -202,10 +203,10 @@ and the output is not at all informative about why the test failed. It simply pr
 
 <p>So, one drawback of this approach is that we can&rsquo;t show some message about why the
 equality failed. Showing an error message by printing it wouldn&rsquo;t be a good design
-because when the user does a simple <code>car1==car2</code> and if they are not equal, <code>__eq__</code>
+because when the user does a simple <code>car1 == car2</code> and if they are not equal, <code>__eq__</code>
 would still print the details of why they are not equal.</p>
 
-<p>Now, we see the second approach in which we can give a detail message about why
+<p>Now, we see the second approach in which we can give a detailed message about why
 the equality failed.</p>
 
 <h3>2. Custom assertion class</h3>
@@ -282,7 +283,7 @@ why the test failed.</p>
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/assert/'>assert</a>, <a class='category' href='/blog/categories/python/'>python,</a>, <a class='category' href='/blog/categories/testing/'>testing,</a>, <a class='category' href='/blog/categories/unittest/'>unittest,</a>
+    <a class='category' href='/blog/categories/assert/'>assert</a>, <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/testing/'>testing</a>, <a class='category' href='/blog/categories/unittest/'>unittest</a>
   
 </span>
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: python, | My Octopress Blog]]></title>
+  <title><![CDATA[Category: python | My Octopress Blog]]></title>
   <link href="http://ankurankan.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://ankurankan.github.io/"/>
-  <updated>2014-06-03T08:23:29+00:00</updated>
+  <updated>2014-06-03T08:38:02+00:00</updated>
   <id>http://ankurankan.github.io/</id>
   <author>
     <name><![CDATA[Ankur Ankan]]></name>
@@ -60,15 +60,16 @@ If you now try to run this test, the test case will fail.
 <code>``
 This is because unittest doesn't know how to compare two</code>Car` objects.</p>
 
-<p>So, we have a two options to make this work:
-1. We can define a <code>__eq__</code> method in <code>Car</code> class.
+<p>So, we have a two options to make this work:<br/>
+1. We can define a <code>__eq__</code> method in <code>Car</code> class.<br/>
 2. We can create a custom assertion class.</p>
 
 <h3>1. <code>__eq__</code> method</h3>
 
 <p><code>__eq__</code> is one of the rich comparison methods. Whenever <code>==</code> is used on any object
-its <code>__eq__</code> method is called. For example <code>car1==car2</code> internally calls <code>car1.__eq__(car2)</code>.
-Our new car class:
+its <code>__eq__</code> method is called. For example <code>car1 == car2</code> internally calls <code>car1.__eq__(car2)</code>.</p>
+
+<p>Our new car class:
 ```python
 class Car:
    def <strong>init</strong>(self, speed, color):</p>
@@ -99,10 +100,10 @@ and the output is not at all informative about why the test failed. It simply pr
 
 <p>So, one drawback of this approach is that we can&rsquo;t show some message about why the
 equality failed. Showing an error message by printing it wouldn&rsquo;t be a good design
-because when the user does a simple <code>car1==car2</code> and if they are not equal, <code>__eq__</code>
+because when the user does a simple <code>car1 == car2</code> and if they are not equal, <code>__eq__</code>
 would still print the details of why they are not equal.</p>
 
-<p>Now, we see the second approach in which we can give a detail message about why
+<p>Now, we see the second approach in which we can give a detailed message about why
 the equality failed.</p>
 
 <h3>2. Custom assertion class</h3>
