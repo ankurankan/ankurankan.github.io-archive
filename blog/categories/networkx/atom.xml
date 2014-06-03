@@ -4,7 +4,7 @@
   <title><![CDATA[Category: NetworkX, | My Octopress Blog]]></title>
   <link href="http://ankurankan.github.io/blog/categories/networkx/atom.xml" rel="self"/>
   <link href="http://ankurankan.github.io/"/>
-  <updated>2013-10-19T18:10:22+05:30</updated>
+  <updated>2014-06-03T08:15:58+00:00</updated>
   <id>http://ankurankan.github.io/</id>
   <author>
     <name><![CDATA[Ankur Ankan]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Plotting and Animating NetworkX graphs]]></title>
     <link href="http://ankurankan.github.io/blog/2013/10/11/plotting-and-animating-networkx-graphs/"/>
-    <updated>2013-10-11T23:04:00+05:30</updated>
+    <updated>2013-10-11T23:04:00+00:00</updated>
     <id>http://ankurankan.github.io/blog/2013/10/11/plotting-and-animating-networkx-graphs</id>
     <content type="html"><![CDATA[<h3>Modifying neworkX graph using Matplotlib</h3>
 
