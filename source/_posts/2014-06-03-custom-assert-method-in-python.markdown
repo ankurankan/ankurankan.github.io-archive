@@ -3,7 +3,7 @@ layout: post
 title: "Custom assert method in python"
 date: 2014-06-03 08:19
 comments: true
-categories: python, testing, unittest, assert
+categories: python testing unittest assert
 ---
 While writing tests we often need to compare objects defined by
 us and we then have to compare each attribute of the object one
@@ -38,14 +38,15 @@ AssertionError: <assert.Car object at 0x7f8edbc078d0> != <assert.Car object at 0
 ```
 This is because unittest doesn't know how to compare two `Car` objects.
 
-So, we have a two options to make this work:
-1. We can define a `__eq__` method in `Car` class.
-2. We can create a custom assertion class.
+So, we have a two options to make this work:  
+1. We can define a `__eq__` method in `Car` class.  
+2. We can create a custom assertion class.  
 
 ### 1. `__eq__` method
 
 `__eq__` is one of the rich comparison methods. Whenever `==` is used on any object
-its `__eq__` method is called. For example `car1==car2` internally calls `car1.__eq__(car2)`.
+its `__eq__` method is called. For example `car1 == car2` internally calls `car1.__eq__(car2)`.
+
 Our new car class:
 ```python
 class Car:
@@ -69,10 +70,10 @@ AssertionError: <Car object at 0x7f1f86af6a20> != <Car object at 0x7f1f86af6a58>
 
 So, one drawback of this approach is that we can't show some message about why the 
 equality failed. Showing an error message by printing it wouldn't be a good design
-because when the user does a simple `car1==car2` and if they are not equal, `__eq__`
+because when the user does a simple `car1 == car2` and if they are not equal, `__eq__`
 would still print the details of why they are not equal.
 
-Now, we see the second approach in which we can give a detail message about why 
+Now, we see the second approach in which we can give a detailed message about why 
 the equality failed.
 
 ### 2. Custom assertion class
