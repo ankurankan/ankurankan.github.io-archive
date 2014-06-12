@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: python | My Octopress Blog]]></title>
-  <link href="http://ankurankan.github.io/blog/categories/python/atom.xml" rel="self"/>
+  <title><![CDATA[Category: exceptions | My Octopress Blog]]></title>
+  <link href="http://ankurankan.github.io/blog/categories/exceptions/atom.xml" rel="self"/>
   <link href="http://ankurankan.github.io/"/>
   <updated>2014-06-12T05:39:58+00:00</updated>
   <id>http://ankurankan.github.io/</id>

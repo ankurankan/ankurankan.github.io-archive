@@ -4,7 +4,7 @@
   <title><![CDATA[Category: unittest | My Octopress Blog]]></title>
   <link href="http://ankurankan.github.io/blog/categories/unittest/atom.xml" rel="self"/>
   <link href="http://ankurankan.github.io/"/>
-  <updated>2014-06-03T08:38:02+00:00</updated>
+  <updated>2014-06-12T05:39:58+00:00</updated>
   <id>http://ankurankan.github.io/</id>
   <author>
     <name><![CDATA[Ankur Ankan]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Custom assert method in python]]></title>
+    <title type="html"><![CDATA[Custom Exceptions in python]]></title>
     <link href="http://ankurankan.github.io/blog/2014/06/03/custom-assert-method-in-python/"/>
     <updated>2014-06-03T08:19:00+00:00</updated>
     <id>http://ankurankan.github.io/blog/2014/06/03/custom-assert-method-in-python</id>
