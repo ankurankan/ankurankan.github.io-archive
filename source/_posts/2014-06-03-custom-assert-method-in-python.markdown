@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "Custom assert method in python"
+title: "Custom Exceptions in python"
 date: 2014-06-03 08:19
 comments: true
-categories: python testing unittest assert
+categories: python testing unittest assert exceptions
 ---
 While writing tests we often need to compare objects defined by
 us and we then have to compare each attribute of the object one
